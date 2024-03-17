@@ -97,6 +97,61 @@ int main(){
     }
 
     closedir(folder);
+
+
+    // Contar la cantidad de archivos para cada directorio y escribirlo en el archivo RegistroPokemon.txt
+    FILE *escritura = fopen("RegistroPokemon.txt", "w");
+    if (escritura == NULL) {
+        perror("Error al abrir archivo\n");
+    } else {
+
+        int totalGen = 0;
+        int totalAlfab = 0;
+        /* Escritura para la parte de Generaciones */
+        fprintf(escritura,"Generacion\n");
+        for (size_t i = 0; i < sizeof(generaciones) / sizeof(char *); i++) {
+            char ruta[100];
+            snprintf(ruta, sizeof(ruta), "Generacion/%s", generaciones[i]);
+
+            folder = opendir(ruta);
+
+            /* Explicacion formal: debido a la inclusión de los directorios . y .., que están presentes en cada directorio en el sistema de archivos de Unix. Estos directorios representan el directorio actual y el directorio padre, respectivamente por lo cual se consideran a la hora de recorrer los directorios*/
+
+            int contador = -2; /* Se setea en -2 dado que que existen dos directorios extra . y .. */
+            while ((directorio = readdir(folder))) {
+                contador++;
+            }
+            closedir(folder);
+
+            fprintf(escritura, "%s - %d\n", generaciones[i], contador);
+        }
+
+
+        /* Escritura para la parte de alfabeto */
+        fprintf(escritura,"\nAlfabetico\n");
+        for (size_t i = 0; i < sizeof(alfabeto); i++) {
+            char ruta[100];
+            snprintf(ruta, sizeof(ruta), "Alfabetico/%c", alfabeto[i]);
+
+            folder = opendir(ruta);
+
+
+            /* Explicacion formal: debido a la inclusión de los directorios . y .., que están presentes en cada directorio en el sistema de archivos de Unix. Estos directorios representan el directorio actual y el directorio padre, respectivamente por lo cual se consideran a la hora de recorrer los directorios*/
+
+            int contador = -2; /* Se setea en -2 dado que que existen dos directorios extra . y .. */
+            while ((directorio = readdir(folder))) {
+                contador++;
+            }
+            closedir(folder);
+
+            fprintf(escritura, "%c - %d\n", alfabeto[i], contador);
+        }
+
+        
+
+
+        fclose(escritura);
+    }
     
     return 0;
 
